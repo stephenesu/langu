@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_HUB_CREDENTIALS = 'stephenesu-dockerhub'
+        DOCKER_IMAGE = 'stephenesu/langu'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the repository
+                git url: 'https://github.com/stephenesu/langu.git', branch: 'main'
+            }
+        }
+
+        stage('Build and Push Microservices') {
+            parallel {
+                stage('Microservice 1') {
+                    steps {
+                        dir('microservice1') {
+                            script {
+                                def image = docker.build("${env.DOCKER_IMAGE}-microservice1:${env.BUILD_NUMBER}")
+                                image.push()
+                            }
+                        }
+                    }
+                }
+                stage('Microservice 2') {
+                    steps {
+                        dir('microservice2') {
+                            script {
+                                def image = docker.build("${env.DOCKER_IMAGE}-microservice2:${env.BUILD_NUMBER}")
+                                image.push()
+                            }
+                        }
+                    }
+                }
+                // Add more microservices here...
+            }
+        }
+
+        stage('Deploy to Docker') {
+            steps {
+                echo 'Deploying Docker containers...'
+                // Add commands to deploy Docker containers, if needed
+                // For example, you might use docker-compose or other deployment tools
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'All microservices deployed successfully!'
+        }
+        failure {
+            echo 'Deployment failed. Please check the logs.'
+        }
+    }
+}
+
