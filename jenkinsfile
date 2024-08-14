@@ -26,9 +26,9 @@ pipeline {
                         }
                     }
                 }
-                stage('Microservice 2') {
+                stage('Microservices 2') {
                     steps {
-                        dir('microservice2') {
+                        dir('microservices2') {
                             script {
                                 def image = docker.build("${env.DOCKER_IMAGE}-microservice2:${env.BUILD_NUMBER}")
                                 image.push()
