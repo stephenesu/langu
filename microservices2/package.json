@@ -1,5 +1,5 @@
 {
-  "name": "microservice2",
+  "name": "microservices2",
   "version": "1.0.0",
   "description": "A simple Node.js API",
   "main": "app.js",
